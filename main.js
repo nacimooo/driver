@@ -22,17 +22,15 @@ controls.target.set(0, -10, 0);
 controls.update();
 
 // setup floor plane
-const planeSize = 500;
+const planeSize = 200;
 
 const Tloader = new THREE.TextureLoader();
-const texture = Tloader.load('/images/checker.png');
-
-texture.wrapS = THREE.RepeatWrapping;
-texture.wrapT = THREE.RepeatWrapping;
-texture.magFilter = THREE.NearestFilter;
-
-const repeats = planeSize / 2;
-texture.repeat.set(repeats, repeats);
+const texture = Tloader.load('/images/track3.png');
+texture.wrapS = THREE.ClampToEdgeWrapping;
+texture.wrapT = THREE.ClampToEdgeWrapping;
+texture.magFilter = THREE.LinearFilter;
+texture.minFilter = THREE.LinearFilter;
+texture.repeat.set(1, 1);
 
 // create the floor plane
 const planeGeo = new THREE.PlaneGeometry(planeSize, planeSize);
@@ -44,10 +42,14 @@ const mesh = new THREE.Mesh(planeGeo, planeMat);
 mesh.rotation.x = Math.PI * -.5;
 scene.add(mesh);
 
-// load 3d model
+
+// load car
 const loader = new GLTFLoader();
+
+loadTrees();
+
 let gltf; // Define gltf as a global variable
-loader.load('/car1/Taxi.gltf', function (loadedGltf) {
+loader.load('/objects/car.gltf', function (loadedGltf) {
     gltf = loadedGltf; // Assign loaded gltf to the global variable
 
     scene.add(gltf.scene);
@@ -56,6 +58,8 @@ loader.load('/car1/Taxi.gltf', function (loadedGltf) {
 }, undefined, function (error) {
     console.log('failed to load')
 });
+
+
 
 // setup ambient light
 const color = 0xFFFFFF;
@@ -85,7 +89,8 @@ document.addEventListener("keyup", onKeyUp);
 function nextFrame() {
     requestAnimationFrame(nextFrame);
 
-    checkButtons(gltf, keyboard, speed)
+    // checkButtons(gltf, keyboard, speed, accel, topSpeed)
+    checkButtons(gltf, keyboard, 1)
 
     // moveCamera(gltf, controls)
     const cameraOffset = new THREE.Vector3(0, 2, -5);
@@ -117,4 +122,132 @@ function moveCamera(gltf, controls, camera, cameraOffset) {
 
     // Set the camera target to the model's position
     controls.target.copy(modelPosition);
+}
+
+function loadTrees(){
+    loader.load('/objects/trees.gltf', function (treeGltf) {
+        const tree = treeGltf.scene.getObjectByName('Tree-01-2')
+        // placeObject(scene, tree, 10, 10)
+        tree.position.x = 30
+        tree.position.z = -20
+    
+        scene.add(tree)
+        renderer.render(scene, camera);
+    
+    }, undefined, function (error) {
+        console.log('failed to load')
+    });
+    loader.load('/objects/trees.gltf', function (treeGltf) {
+        const tree = treeGltf.scene.getObjectByName('Tree-01-2')
+        // placeObject(scene, tree, 10, 10)
+        tree.position.x = 35
+        tree.position.z = -25
+    
+        scene.add(tree)
+        renderer.render(scene, camera);
+    
+    }, undefined, function (error) {
+        console.log('failed to load')
+    });
+    loader.load('/objects/trees.gltf', function (treeGltf) {
+        const tree = treeGltf.scene.getObjectByName('Tree-01-2')
+        // placeObject(scene, tree, 10, 10)
+        tree.position.x = 25
+        tree.position.z = -15
+    
+        scene.add(tree)
+        renderer.render(scene, camera);
+    
+    }, undefined, function (error) {
+        console.log('failed to load')
+    });
+    loader.load('/objects/trees.gltf', function (treeGltf) {
+        const tree = treeGltf.scene.getObjectByName('Tree-01-2')
+        // placeObject(scene, tree, 10, 10)
+        tree.position.x = 46
+        tree.position.z = -36
+    
+        scene.add(tree)
+        renderer.render(scene, camera);
+    
+    }, undefined, function (error) {
+        console.log('failed to load')
+    });
+    loader.load('/objects/trees.gltf', function (treeGltf) {
+        const tree = treeGltf.scene.getObjectByName('Tree-01-2')
+        // placeObject(scene, tree, 10, 10)
+        tree.position.x = 46
+        tree.position.z = -46
+    
+        scene.add(tree)
+        renderer.render(scene, camera);
+    
+    }, undefined, function (error) {
+        console.log('failed to load')
+    });
+
+    loader.load('/objects/trees.gltf', function (treeGltf) {
+        const tree = treeGltf.scene.getObjectByName('Tree-01-3')
+        // placeObject(scene, tree, 10, 10)
+        tree.position.x = 40
+        tree.position.z = -65
+    
+        scene.add(tree)
+        renderer.render(scene, camera);
+    
+    }, undefined, function (error) {
+        console.log('failed to load')
+    });
+
+    loader.load('/objects/trees.gltf', function (treeGltf) {
+        const tree = treeGltf.scene.getObjectByName('Tree-02-3')
+        // placeObject(scene, tree, 10, 10)
+        tree.position.x = 41
+        tree.position.z = -68
+    
+        scene.add(tree)
+        renderer.render(scene, camera);
+    
+    }, undefined, function (error) {
+        console.log('failed to load')
+    });
+
+    loader.load('/objects/trees.gltf', function (treeGltf) {
+        const tree = treeGltf.scene.getObjectByName('Tree-02-3')
+        
+        tree.position.x = 9
+        tree.position.z = -51
+    
+        scene.add(tree)
+        renderer.render(scene, camera);
+    
+    }, undefined, function (error) {
+        console.log('failed to load')
+    });
+
+    loader.load('/objects/trees.gltf', function (treeGltf) {
+        const tree = treeGltf.scene.getObjectByName('Tree-02-3')
+        
+        tree.position.x = -4
+        tree.position.z = -57
+    
+        scene.add(tree)
+        renderer.render(scene, camera);
+    
+    }, undefined, function (error) {
+        console.log('failed to load')
+    });
+
+    loader.load('/objects/trees.gltf', function (treeGltf) {
+        const tree = treeGltf.scene.getObjectByName('Tree-03-3')
+        
+        tree.position.x = -26
+        tree.position.z = -78
+    
+        scene.add(tree)
+        renderer.render(scene, camera);
+    
+    }, undefined, function (error) {
+        console.log('failed to load')
+    });
 }

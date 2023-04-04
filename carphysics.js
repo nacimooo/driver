@@ -1,49 +1,68 @@
 
-function checkButtons(gltf, keyboard, speed) {
 
-    // Move the GLTF model with arrow keys
+function checkButtons(gltf, keyboard, dt) {
+    const car = gltf.scene // assuming the car is the first child object of the loaded GLTF
+
+    const accel = 0.002; // acceleration
+    const brake = 0.001; // braking force
+    const steer = 0.0002; // steering angle
+    const friction = 0.005; // friction coefficient
+    const topSpeed = 0.4; // top speed
+
+    let speed = gltf.userData.speed || 0;
+    let steering = gltf.userData.steering || 0;
+
+    // Accelerate when up arrow is pressed
     if (keyboard["ArrowUp"]) {
-        if ((gltf.scene.rotation.y > 1.6 && gltf.scene.rotation.y < 4.6) || (gltf.scene.rotation.y < -1.6 && gltf.scene.rotation.y > -4.6)) {
-            console.log('backward')
-            gltf.scene.position.z -= speed
-        } else {
-            console.log('forward')
-            gltf.scene.position.z += speed
-        }
-
-        if (!((gltf.scene.rotation.y > -0.2 && gltf.scene.rotation.y < 0.2) ||
-            (gltf.scene.rotation.y > -3.2 && gltf.scene.rotation.y < -2.9) ||
-            (gltf.scene.rotation.y > 2.9 && gltf.scene.rotation.y < 3.2))) {
-                
-            if ((gltf.scene.rotation.y > 0.2 && gltf.scene.rotation.y < 3.1) || (gltf.scene.rotation.y < -0.2 && gltf.scene.rotation.y < -3.1)) {
-                console.log('left')
-                gltf.scene.position.x += speed
-            } else {
-                console.log('right')
-                gltf.scene.position.x -= speed
-            }
-        }
-
+        speed += accel * dt;
+        speed = Math.min(speed, topSpeed);
+    } else {
+        speed -= friction * dt;
+        speed = Math.max(speed, 0);
     }
 
+    // Apply understeer
+    const understeer = Math.abs(speed) * 0.05;
+    steering *= (1 - understeer);
+
+    // Apply brakes when down arrow is pressed
     if (keyboard["ArrowDown"]) {
-        gltf.scene.position.z -= speed
+        speed -= brake * dt;
+        speed = Math.max(speed, 0);
     }
 
-    if (keyboard["ArrowLeft"]) {
-        gltf.scene.rotation.y += 0.01
+    // Update car position and rotation based on speed and steering
+    const deltaX = Math.sin(car.rotation.y + steering) * speed;
+    const deltaZ = Math.cos(car.rotation.y + steering) * speed;
+    car.position.x += deltaX;
+    car.position.z += deltaZ;
+
+    if (speed > 0) {
+        // Steer when left or right arrow is pressed and the car is moving
+        if (keyboard["ArrowLeft"]) {
+            steering += steer * dt;
+        } else if (keyboard["ArrowRight"]) {
+            steering -= steer * dt;
+        }
     }
 
-    if (keyboard["ArrowRight"]) {
-        gltf.scene.rotation.y -= 0.01
-    }
+    car.rotation.y += steering;
 
-    if (Math.abs(gltf.scene.rotation.y) > 6) {
-        gltf.scene.rotation.y = 0
-    }
+    // Save current speed and steering to gltf.userData for use in the next frame
+    gltf.userData.speed = speed;
+    gltf.userData.steering = steering;
 
-    console.log(gltf.scene.rotation.y)
+    console.log('x: ' + car.position.x)
+    console.log('z: '+ car.position.z)
 }
+
+
+function placeObject(scene, gltfObject, xPos, zPos) {
+    gltfObject.position.x = xPos;
+    gltfObject.position.z = zPos;
+    scene.add(gltfObject.scene);
+}
+
 
 
 
